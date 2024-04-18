@@ -30,7 +30,7 @@ class UserFactory extends Factory
             'password' => static::$password ??= Hash::make('1234'),
             'NationalId'=> fake()->NationalID,
             'Phone' => fake()->randomElement(['0701237958','0714200992','0701404085']),
-            'role' => fake()->randomElement(['admin','user','CareTaker']),
+            'role' => fake()->randomElement(['admin','Tenant','CareTaker']),
             'status' => fake()->randomElement(['active','inactive']),
             'remember_token' => Str::random(5),
         ];
