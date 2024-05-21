@@ -4,7 +4,6 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\LoginRequest;
-use App\Providers\RouteServiceProvider;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -25,20 +24,19 @@ class AuthenticatedSessionController extends Controller
      */
     public function store(LoginRequest $request): RedirectResponse
     {
-        $request->authenticate();
+        $user = $request->authenticate();
 
         $request->session()->regenerate();
 
+        $guard = session('auth_guard');
 
-        //  INSERT YOUR DEFAULT LOGIN PAGE
         $url = '';
-        if($request->user()->role === 'admin'){
-            $url = 'admin/dashboard';
-        }
-        elseif($request->user()->role === 'user'){
-            $url = 'user/dashboard';
-        }elseif($request->user()->role === 'CareTaker'){
-            $url ='/dashbaord';
+        if($guard === 'admin'){
+            $url = '/admin/dashboard';
+        } elseif($guard === 'manager'){
+            $url = '/manager/dashboard';
+        } elseif($guard === 'tenant'){
+            $url = '/tenant/dashboard';
         }
 
         return redirect()->intended($url);
@@ -49,7 +47,9 @@ class AuthenticatedSessionController extends Controller
      */
     public function destroy(Request $request): RedirectResponse
     {
-        Auth::guard('web')->logout();
+        $guard = session('auth_guard');
+
+        Auth::guard($guard)->logout();
 
         $request->session()->invalidate();
 

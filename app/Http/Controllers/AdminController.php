@@ -17,7 +17,7 @@ class AdminController extends Controller
 {
     public function AdminDashboard(){
 
-      return view('admin/index');
+        return view('admin/index');
     }
 
 
@@ -28,7 +28,7 @@ class AdminController extends Controller
 
         $request->session()->regenerateToken();
 
-        return redirect('/login');
+        return redirect('/');
     }
 
     public function AddProperty(){
@@ -75,11 +75,15 @@ class AdminController extends Controller
 
         $Property->save();
         return redirect()->route('admin.property');
-        //return view('admin.property');
+
 
     }
 
 
 }
+
+
+// ADD/ MANAGER CARETAKERS    SET ROLES TO AVTIVE, APARTMENT ETC
+
 
 ?>

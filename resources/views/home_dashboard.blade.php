@@ -32,9 +32,11 @@
 
   <!-- /.content-wrapper -->
   <!-- Main Footer -->
-  @include('layouts.footer')
+
  </div>
-</div>
+ </div>
+ @include('layouts.footer')
+
 <!-- wrapper -->
 </body>
 <!-- REQUIRED SCRIPTS -->

@@ -16,20 +16,6 @@
           <a class="nav-link" href="#">Shops</a>
         </li>
 
-        <!-- <li class="nav-item">
-                <div class="btn-group">
-                    <button type="button" class="btn btn-tool dropdown-toggle" data-toggle="dropdown">
-                    <i class="fas fa-home">Apartments</i>
-                    <div class="dropdown-menu dropdown-menu-left">
-                      <a href="#" class="dropdown-item">2/3 Bedrooms</a>
-                      <a href="#" class="dropdown-item">1 Bedrooms</a>
-                      <a href="#" class="dropdown-item">Singe Rooms</a>
-                      <a href="#" class="dropdown-item">Separated link</a>
-                    </div>
-                    </button>
-                  </div>
-            </li> -->
-
             <li class="nav-item dropdown">
         <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
           Apartments
@@ -58,9 +44,57 @@
     </form>
       <ul class="navbar-nav2">
         <li class="nav-item">
-          <a class="nav-link" href="#">Log In</a>
+        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
+  LOGIN
+</button>
+
         </li>
       </ul>
     </div>
   </div>
 </nav>
+
+<!-- LoginModal -->
+
+<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Login</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+
+      <div class="modal-body">
+      <form method="POST" action="{{ route('login') }}">
+    @csrf
+    <div class="form-group">
+        <label for="IDNumber">Enter ID Number</label>
+        <div class="input-group pb-modalreglog-input-group">
+            <input type="text" class="form-control" id="IDNumber" name="IDNumber" placeholder="ID/Passport Number" required>
+        </div>
+    </div>
+    <div class="form-group">
+        <label for="password">Password</label>
+        <div class="input-group pb-modalreglog-input-group">
+            <input type="password" class="form-control" id="password" name="password" placeholder="Password" required>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+        <div class="form-group">
+            <input type="submit" name="Login" value="Login" class="btn btn-block" style="color: green;">
+        </div>
+    </div>
+</form>
+
+        </div>
+
+
+      </div>
+
+    </div>
+  </div>
+</div>

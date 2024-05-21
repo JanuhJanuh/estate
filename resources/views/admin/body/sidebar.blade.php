@@ -47,8 +47,8 @@
                      <i class="fas fa-users"></i><label>Management</label>
                     </button>
                     <div class="dropdown-menu dropdown-menu-right" role="menu">
-                      <a href="#" class="dropdown-item">Add Management personel</a>
-                      <a href="#" class="dropdown-item">View Management</a>
+                      <a href="{{route('admin.addmanager') }}" class="dropdown-item">Add Management personel</a>
+                      <a href="{{ route('admin.managers') }}" class="dropdown-item">View Management</a>
 
             </div>
          </div>
