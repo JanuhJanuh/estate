@@ -54,6 +54,12 @@ Route::middleware(['auth:admin'])->group(function () {
 // Manager routes
 Route::middleware(['auth:manager'])->group(function () {
     Route::get('/manager/dashboard', [ManagerController::class, 'ManagerDashboard'])->name('manager.dashboard');
+    Route::get('/manager/Units', [ManagerController::class, 'ManageApartmentUnits'])->name('manager.manageapartmentform');
+    Route::post('/manager/manage-units', [ManagerController::class, 'ManageUnits'])->name('manager.manageunits');
+
+
+
+
     // Add other manager routes here
 });
 

@@ -1,6 +1,5 @@
-<!-- resources/views/admin/allocate.blade.php -->
-
 @extends('admin.admin_dashboard')
+
 @section('admin')
 
 <div class="content-wrapper">
@@ -59,6 +58,20 @@
 
                                 <button type="submit" class="btn btn-primary">Allocate</button>
                             </form>
+
+                            <!-- Success message -->
+                            @if(session('success'))
+                                <div class="alert alert-success mt-3" role="alert">
+                                    {{ session('success') }}
+                                </div>
+                            @endif
+
+                            <!-- Error message -->
+                            @if(session('error'))
+                                <div class="alert alert-danger mt-3" role="alert">
+                                    {{ session('error') }}
+                                </div>
+                            @endif
                         </div>
                         <!-- /.card-body -->
                     </div>

@@ -1,0 +1,27 @@
+body {
+    padding-top: 56px; /* Height of the fixed navbar */
+}
+
+.sidebar {
+    position: fixed;
+    top: 56px; /* Height of the fixed navbar */
+    bottom: 0;
+    left: 0;
+    z-index: 1000;
+    padding: 20px;
+    overflow-x: hidden;
+    overflow-y: auto; /* Scrollable sidebar */
+    border-right: 1px solid #dee2e6;
+}
+
+.navbar {
+    z-index: 1030; /* Ensure the navbar is above other elements */
+}
+
+.footer {
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    background-color: #f8f9fa;
+    border-top: 1px solid #dee2e6;
+}

@@ -12,14 +12,17 @@ return [
             'driver' => 'session',
             'provider' => 'users',
         ],
+
         'admin' => [
             'driver' => 'session',
-            'provider' => 'users',
+            'provider' => 'users', // Use 'users' provider for admins
         ],
+
         'manager' => [
             'driver' => 'session',
             'provider' => 'managers',
         ],
+
         'tenant' => [
             'driver' => 'session',
             'provider' => 'tenants',
@@ -31,15 +34,19 @@ return [
             'driver' => 'eloquent',
             'model' => App\Models\User::class,
         ],
+
         'managers' => [
             'driver' => 'eloquent',
             'model' => App\Models\Managers::class,
         ],
+
         'tenants' => [
             'driver' => 'eloquent',
             'model' => App\Models\Tenants::class,
         ],
     ],
+
+
 
     'passwords' => [
         'users' => [

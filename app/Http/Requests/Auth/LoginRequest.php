@@ -26,7 +26,7 @@ class LoginRequest extends FormRequest
         $credentials = $this->only('IDNumber', 'password');
 
         $guards = [
-            'admin' => 'admins',
+            'admin' => 'users', // Adjusted to match the provider
             'manager' => 'managers',
             'tenant' => 'tenants',
             'web' => 'users',
@@ -44,4 +44,3 @@ class LoginRequest extends FormRequest
         ]);
     }
 }
-

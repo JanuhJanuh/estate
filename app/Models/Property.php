@@ -7,14 +7,14 @@ use Illuminate\Database\Eloquent\Model;
 
 class Property extends Model
 {
-    protected $table = '_property';
-    protected $fillable = ['PName', 'Address', 'Units'];
-    protected $guarded = [];
-
     use HasFactory;
 
-    public function manager()
+    protected $table = '_property';
+    protected $fillable = ['PName', 'Address', 'Units', 'logo'];
+
+    public function allocation()
     {
-        return $this->hasOne(Managers::class); //Managers is your manager model
+        return $this->hasOne(ManageMgr::class, 'apartment_id');
     }
 }
+

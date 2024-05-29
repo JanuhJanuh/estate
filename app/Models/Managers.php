@@ -2,32 +2,39 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\Hash;
 
-class Managers extends Model
+class Managers extends Authenticatable
 {
-    protected $table = 'Managers';
+    use Notifiable;
+
     protected $fillable = [
-        'Name',
-        'IDNumber',
-        'DOB',
-        'Gender',
-        'PhoneNo',
-        'Email',
-        'Image',
-        'Address',
-        'Role',
+        'Name', 'IDNumber', 'DOB', 'Gender', 'PhoneNo', 'Email', 'Image', 'Address', 'Role', 'Password',
+    ];
+
+    protected $hidden = [
         'Password',
     ];
-    protected $guarded = [];
-    protected $primaryKey = 'ID';
 
-    use HasFactory;
+    protected $casts = [
+        'DOB' => 'date',
+    ];
 
-    public function property()
+    public function setPasswordAttribute($value)
     {
-        return $this->hasOne(Property::class); // Assuming Property is your property model
+        $this->attributes['Password'] = Hash::make($value);
+    }
+
+    public function allocation()
+    {
+        return $this->hasOne(ManageMgr::class, 'manager_id');
+    }
+
+    public function apartment()
+    {
+        return $this->hasOneThrough(Property::class, ManageMgr::class, 'manager_id', 'id', 'id', 'apartment_id');
     }
 }
+

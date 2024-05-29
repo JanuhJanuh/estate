@@ -1,12 +1,21 @@
 <?php
 
+
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 
-class Tenants extends Model
+class Tenant extends Authenticatable
 {
-    use HasFactory;
+    protected $fillable = [
+        'Name', 'IDNumber', 'DOB', 'Gender', 'PhoneNo', 'Email', 'Image', 'Address', 'Role', 'Password',
+    ];
+
+    protected $hidden = [
+        'Password',
+    ];
+
+    protected $casts = [
+        'DOB' => 'date',
+    ];
 }
