@@ -40,10 +40,9 @@ public function ManageApartmentUnits()
 
     return view('manager.manageapartment', compact('manager', 'apartment', 'totalUnits'));
 }
-
+// Store The Managers Appartment Management data and array of Images //
 public function ManageUnits(Request $request)
 {
-    // Validate request data
     $request->validate([
         'room_type' => 'required|string',
         'room_numbers' => 'required|array',
@@ -53,20 +52,27 @@ public function ManageUnits(Request $request)
         'room_images_*.file' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
     ]);
 
-    // Get the logged-in manager
     $manager = Auth::guard('manager')->user();
-    $managerApart= $manager->allocation()->with('property')->first();
+    $managerAllocation = $manager->allocation()->with('property')->first();
 
-    // Ensure the manager has an apartment allocated
-
-    if (!$managerApart->apartment_id) {
-        return redirect()->back()->with('error', 'No apartment allocated to you.');
+    if (!$managerAllocation || !$managerAllocation->apartment_id) {
+        return redirect()->back()->with('error', 'Contact Admin For Assistance.');
     }
 
-    // Retrieve the apartment ID
-    $apartmentId = $managerApart->apartment_id;
+    $adminAllocatedUnits = $managerAllocation->property->units;
+    $existingUnitsCount = ApartmentRoom::where('apartment_id', $managerAllocation->apartment_id)->count();
+    $remainingUnits = $adminAllocatedUnits - $existingUnitsCount;
 
-    // Process room numbers and images
+    print($adminAllocatedUnits);
+    exit();
+
+
+    $requestedUnits = count($request->room_numbers);
+    if ($requestedUnits > $remainingUnits) {
+        $errorMessage = "Cannot allocate more units than the original allocated units by the admin. Admin Units: $adminAllocatedUnits, Remaining Units: $remainingUnits";
+        return redirect()->back()->with('error', $errorMessage);
+    }
+
     foreach ($request->room_numbers as $index => $roomNumber) {
         $images = [];
         if ($request->hasFile("room_images_$index")) {
@@ -76,9 +82,8 @@ public function ManageUnits(Request $request)
             }
         }
 
-        // Create a new apartment room entry
         ApartmentRoom::create([
-            'apartment_id' => $apartmentId,
+            'apartment_id' => $managerAllocation->apartment_id,
             'room_type' => $request->room_type,
             'room_number' => $roomNumber,
             'charges' => $request->charges,
@@ -86,10 +91,13 @@ public function ManageUnits(Request $request)
         ]);
     }
 
-    return redirect()->back()->with('success', 'Units Succesffuly Updated.');
+    $successMessage = 'Units Successfully Updated. Remaining Units: ' . $remainingUnits;
+    return redirect()->back()->with('success', $successMessage);
 }
 
 
+
+// Wazi Man MAN //
 
 
     public function AddManager()
