@@ -17,10 +17,9 @@ return new class extends Migration
             $table->string('IDNumber');
             $table->string('Phone');
             $table->string('Gender');
-            $table->string('Phone2');
             $table->string('Email');
             $table->string('IDImage');
-            $table->string('Password');
+            $table->string('password');
             $table->string('Role');
             $table->timestamps();
         });

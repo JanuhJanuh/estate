@@ -14,10 +14,18 @@ class ApartmentRoom extends Model
         'room_type',
         'room_number',
         'charges',
-        'images',
+        'status', // Make sure this column is fillable
+        'amenities',
+        'overview'
     ];
 
-    protected $casts = [
-        'images' => 'array',
-    ];
+    public function apartment()
+    {
+        return $this->belongsTo(Property::class, 'apartment_id');
+    }
+
+    public function images()
+    {
+        return $this->hasMany(RoomImage::class, 'apartment_room_id');
+    }
 }

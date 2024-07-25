@@ -20,14 +20,13 @@
                 <div class="card-body">
                     <h5 class="card-title">Apartment Details</h5>
                     @if($allocation && $allocation->property)
-                        <p><strong>Name:</strong> {{ $allocation->property->name }}</p>
-                        <p><strong>Location:</strong> {{ $allocation->property->location }}</p>
-                        <p><strong>Tenants:</strong> {{ $allocation->property->tenants }}</p>
+                        <p><strong>Name:</strong> {{ $allocation->property->PName }}</p>
+                        <p><strong>Location:</strong> {{ $allocation->property->Address }}</p>
+                        <p><strong>Tenants:</strong> {{ $allocation->property->tenants->count() }}</p>
                         <p><strong>Status:</strong> {{ $allocation->property->status }}</p>
                     @else
                         <p>No allocated apartment details available.</p>
                     @endif
-                    <!-- Add more apartment details here as needed -->
                 </div>
             </div>
         </div>
@@ -40,7 +39,7 @@
         <div class="card">
             <div class="card-body">
                 <h5 class="card-title">Number of Tenants</h5>
-                <p class="card-text">{{ $allocation->property->tenants ?? 'N/A' }}</p>
+                <p class="card-text">{{ $allocation->property->tenants->count() ?? 'N/A' }}</p>
             </div>
         </div>
     </div>
@@ -91,9 +90,9 @@
             @if($allocation && $allocation->property)
                 <tr>
                     <td>1</td>
-                    <td>{{ $allocation->property->name }}</td>
-                    <td>{{ $allocation->property->location }}</td>
-                    <td>{{ $allocation->property->tenants }}</td>
+                    <td>{{ $allocation->property->PName }}</td>
+                    <td>{{ $allocation->property->Address }}</td>
+                    <td>{{ $allocation->property->tenants->count() }}</td>
                     <td>{{ $allocation->property->status }}</td>
                     <td>
                         <button class="btn btn-sm btn-primary">View</button>
@@ -105,7 +104,6 @@
                     <td colspan="6">No allocated apartment details available.</td>
                 </tr>
             @endif
-            <!-- Additional rows as needed -->
         </tbody>
     </table>
 </div>

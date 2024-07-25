@@ -34,7 +34,13 @@ class Managers extends Authenticatable
 
     public function apartment()
     {
-        return $this->hasOneThrough(Property::class, ManageMgr::class, 'manager_id', 'id', 'id', 'apartment_id');
+        return $this->hasOneThrough(
+            Property::class,
+            ManageMgr::class,
+            'manager_id',
+            'id',
+            'id',
+            'apartment_id'
+        );
     }
 }
-

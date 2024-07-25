@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -9,12 +8,34 @@ class Property extends Model
 {
     use HasFactory;
 
-    protected $table = '_property';
-    protected $fillable = ['PName', 'Address', 'Units', 'logo'];
+    protected $table = '_property'; // Assuming the table name is 'properties'
+
+    protected $fillable = [
+        'PName', 'PropertyType', 'Address', 'Description', 'Units',
+    ];
 
     public function allocation()
     {
         return $this->hasOne(ManageMgr::class, 'apartment_id');
     }
-}
 
+    public function images()
+    {
+        return $this->hasMany(PropertyImages::class, 'property_id');
+    }
+
+    public function apartmentRooms()
+    {
+        return $this->hasMany(ApartmentRoom::class, 'apartment_id');
+    }
+
+    public function rooms()
+    {
+        return $this->hasMany(Room::class, 'apartment_id');
+    }
+    public function tenants()
+    {
+        return $this->hasManyThrough(Tenant::class, ApartmentBooking::class, 'apartment_id', 'id', 'id', 'tenant_id');
+    }
+
+}

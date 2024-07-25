@@ -1,162 +1,101 @@
 @extends('admin.admin_dashboard')
- @Section('admin')
+
+@section('admin')
 
 <div class="content-wrapper">
-    <!-- Content Header (Page header) -->
     <div class="content-header">
-      <div class="container-fluid">
-        <div class="row mb-2">
-          <div class="col-sm-6">
-            <h1 class="m-0">Add Property</h1>
-          </div><!-- /.col -->
-          <!-- /.col -->
-        </div><!-- /.row -->
-      </div><!-- /.container-fluid -->
+        <div class="container-fluid">
+            <div class="row mb-2">
+                <div class="col-sm-6">
+                    <h1 class="m-0">Add Property</h1>
+                </div>
+            </div>
+        </div>
     </div>
-    <!-- /.content-header -->
 
-    <!-- Main content -->
     <section class="content">
-      <div class="container-fluid">
-        <!-- Info boxes -->
+        <div class="container-fluid">
+            @if(session('error'))
+            <div class="alert alert-danger">
+                {{ session('error') }}
+            </div>
+            @endif
 
-        <!-- /.row -->
+            @if(session('success'))
+            <div class="alert alert-success">
+                {{ session('success') }}
+            </div>
+            @endif
 
-        <div class="row">
-          <div class="col-md-12">
-            <div class="card">
-              <div class="card-header">
-                <h5 class="card-title">Add New Property</h5>
+            @if ($errors->any())
+                <div class="alert alert-danger">
+                    <ul>
+                        @foreach ($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                </div>
+            @endif
 
-                <div class="card-tools">
-                  <button type="button" class="btn btn-tool" data-card-widget="collapse">
-                    <i class="fas fa-minus"></i>
-                  </button>
-                  <div class="btn-group">
-                    <button type="button" class="btn btn-tool dropdown-toggle" data-toggle="dropdown">
-                      <i class="fas fa-wrench"></i>
-                    </button>
-                    <div class="dropdown-menu dropdown-menu-right" role="menu">
-                      <a href="#" class="dropdown-item">Action</a>
-                      <a href="#" class="dropdown-item">Another action</a>
-                      <a href="#" class="dropdown-item">Something else here</a>
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5 class="card-title">Add New Property</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="col-md-12">
+                                <div class="card card-primary">
+                                    <div class="card-header">
+                                        <h3 class="card-title">Property Details</h3>
+                                    </div>
+                                    <form action="{{ route('admin.saveproperty') }}" method="POST" enctype="multipart/form-data">
+                                        @csrf
+                                        <div class="card-body">
+                                            <div class="form-group">
+                                                <label for="PName">Property Name:</label>
+                                                <input type="text" name="PName" class="form-control" id="PName" placeholder="Property Name" value="{{ old('PName') }}" required>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="PropertyType">Property Type:</label>
+                                                <select name="PropertyType" class="form-control" id="PropertyType" required>
+                                                    <option value="" disabled {{ old('PropertyType') ? '' : 'selected' }}>Select Property Type</option>
+                                                    <option value="Apartment" {{ old('PropertyType') == 'Apartment' ? 'selected' : '' }}>Apartment - Self Contained Housing Units</option>
+                                                    <option value="House" {{ old('PropertyType') == 'House' ? 'selected' : '' }}>House - A standalone residential Home</option>
+                                                    <option value="oneB" {{ old('PropertyType') == 'oneB' ? 'selected' : '' }}>One/Two Bedroom Units</option>
+                                                    <option value="Studio" {{ old('PropertyType') == 'Studio' ? 'selected' : '' }}>Studio - Bedsitters</option>
+                                                    <option value="Self-contained Room" {{ old('PropertyType') == 'Self-contained Room' ? 'selected' : '' }}>Self-contained Room - Single room with Basic facilities</option>
+                                                </select>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="Address">Address:</label>
+                                                <input type="text" name="Address" class="form-control" id="Address" placeholder="Location" value="{{ old('Address') }}" required>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="Description">Description:</label>
+                                                <textarea name="Description" class="form-control" id="Description" rows="4" placeholder="Property Description 4 rows max" required>{{ old('Description') }}</textarea>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="Units">Total Units:</label>
+                                                <input type="number" name="Units" class="form-control" id="Units" placeholder="Total Units" value="{{ old('Units') }}" required>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="Images">Property Images:</label>
+                                                <input type="file" name="Images[]" class="form-control-file" id="Images" multiple required>
+                                            </div>
+                                        </div>
+
+                                        <div class="card-footer">
+                                            <button type="submit" class="btn btn-primary">Submit</button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                  </div>
-
                 </div>
-              </div>
-              <!-- /.card-header -->
-              <div class="card-body">
-
-              <div class="col-md-12">
-            <!-- general form elements -->
-            <div class="card card-primary">
-              <div class="card-header">
-                <h3 class="card-title">Property Details</h3>
-              </div>
-              <!-- /.card-header -->
-              <!-- form start -->
-             <form action="{{ route('admin.saveproperty') }}" method="POST">
-                @csrf
-                @method('POST')
-                <div class="card-body">
-                  <div class="form-group">
-                    <label for="Appname">Property Name:</label>
-                    <input type="text" name ="PName" class="form-control" id="PName" placeholder="Propety Name">
-                  </div>
-                  <div class="form-group">
-                    <label for="location">Location</label>
-                    <input type="text" name="Address" class="form-control" id="Address" placeholder="Physical Address">
-                  </div>
-                  <div class="form-group">
-                    <label for="units">Total Units</label>
-                    <input type="number" name= "Units" class="form-control" id="Units" placeholder="Total Units">
-                  </div>
-
-
-                </div>
-                <!-- /.card-body -->
-
-                <div class="form-group">
-                  <button type="submit" class="btn btn-primary">Submit</button>
-                </div>
-              </form>
             </div>
-
-          </div>
-                <!-- /.row -->
-              </div>
-              <!-- ./card-body -->
-            </div>
-            <!-- /.card -->
-          </div>
-          <!-- /.col -->
         </div>
-        <div class="row">
-          <div class="col-12 col-sm-6 col-md-3">
-            <div class="info-box">
-              <span class="info-box-icon bg-info elevation-1"><i class="fas fa-cog"></i></span>
-
-              <div class="info-box-content">
-                <span class="info-box-text">Entries</span>
-                <span class="info-box-number">
-
-                  <small>%</small>
-                </span>
-              </div>
-              <!-- /.info-box-content -->
-            </div>
-            <!-- /.info-box -->
-          </div>
-          <!-- /.col -->
-          <div class="col-12 col-sm-6 col-md-3">
-            <div class="info-box mb-3">
-              <span class="info-box-icon bg-danger elevation-1"><i class="fas fa-thumbs-up"></i></span>
-
-              <div class="info-box-content">
-                <span class="info-box-text">Tenats</span>
-                <span class="info-box-number">41,410</span>
-              </div>
-              <!-- /.info-box-content -->
-            </div>
-            <!-- /.info-box -->
-          </div>
-          <!-- /.col -->
-
-          <!-- fix for small devices only -->
-          <div class="clearfix hidden-md-up"></div>
-
-          <div class="col-12 col-sm-6 col-md-3">
-            <div class="info-box mb-3">
-              <span class="info-box-icon bg-success elevation-1"><i class="fas fa-shopping-cart"></i></span>
-
-              <div class="info-box-content">
-                <span class="info-box-text">payments</span>
-                <span class="info-box-number">760</span>
-              </div>
-              <!-- /.info-box-content -->
-            </div>
-            <!-- /.info-box -->
-          </div>
-          <!-- /.col -->
-          <div class="col-12 col-sm-6 col-md-3">
-            <div class="info-box mb-3">
-              <span class="info-box-icon bg-warning elevation-1"><i class="fas fa-users"></i></span>
-
-              <div class="info-box-content">
-                <span class="info-box-text">New Members</span>
-                <span class="info-box-number">2,000</span>
-              </div>
-              <!-- /.info-box-content -->
-            </div>
-            <!-- /.info-box -->
-          </div>
-          <!-- /.col -->
-        </div>
-      </div><!--/. container-fluid -->
     </section>
-    <!-- /.content -->
-  </div>
 </div>
-
- @endSection
+@endsection

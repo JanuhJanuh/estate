@@ -42,7 +42,7 @@ return [
 
         'tenants' => [
             'driver' => 'eloquent',
-            'model' => App\Models\Tenants::class,
+            'model' => App\Models\Tenant::class,
         ],
     ],
 

@@ -1,30 +1,33 @@
 <?php
 
-use Illuminate\Database\Migrations\Migration;
-use Illuminate\Database\Schema\Blueprint;
-use Illuminate\Support\Facades\Schema;
+namespace App\Models;
 
-return new class extends Migration
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+
+class Property extends Model
 {
-    /**
-     * Run the migrations.
-     */
-    public function up(): void
+    use HasFactory;
+
+    protected $table = '_property';
+
+    protected $fillable = [
+        'PName', 'PropertyType', 'Address', 'Description', 'Units',
+    ];
+
+
+    public function allocation()
     {
-        Schema::create('_property', function (Blueprint $table) {
-            $table->id();
-            $table->string('PName');
-            $table->string('Address');
-            $table->string('Units');
-            $table->timestamps();
-        });
+        return $this->hasOne(ManageMgr::class, 'apartment_id');
     }
 
-    /**
-     * Reverse the migrations.
-     */
-    public function down(): void
+    public function images()
     {
-        Schema::dropIfExists('_property');
+        return $this->hasMany(PropertyImages::class);
     }
-};
+
+    public function apartmentRooms()
+    {
+        return $this->hasMany(ApartmentRoom::class, 'apartment_id');
+    }
+}

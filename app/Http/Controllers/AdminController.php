@@ -20,8 +20,7 @@ class AdminController extends Controller
         return view('admin/index');
     }
 
-
-    public function adminLogout(Request $request){
+  public function adminLogout(Request $request){
         Auth::guard('web')->logout();
 
         $request->session()->invalidate();
@@ -31,25 +30,57 @@ class AdminController extends Controller
         return redirect('/');
     }
 
+
+
     public function AddProperty(){
         return view('admin.addproperty');
     }
-    public function SaveProperty(Request $request){
+
+    public function SaveProperty(Request $request)
+    {
+        // Validate request data
         $request->validate([
-            'PName' => 'required',
-            'Address' => 'required',
-            'Units' => 'required',
+            'PName' => 'required|string|max:255',
+            'PropertyType' => 'required|string',
+            'Address' => 'required|string|max:255',
+            'Description' => 'required|string',
+            'Units' => 'required|integer',
+            'Images.*' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
         ]);
 
-        property::create([
-            'PName'=>$request->PName,
-            'Address' =>$request->Address,
-            'Units' =>$request->Units,
-        ]);
-        return redirect()->route('admin.property');
+        try {
+            // Log the request data
+            \Log::info('Request data: ', $request->all());
 
+            // Create new property
+            $property = Property::create([
+                'PName' => $request->PName,
+                'PropertyType' => $request->PropertyType,
+                'Address' => $request->Address,
+                'Description' => $request->Description,
+                'Units' => $request->Units,
+            ]);
 
+            // Log the created property
+            \Log::info('Property created: ', $property->toArray());
+
+            // Handle image uploads
+            if ($request->hasFile('Images')) {
+                foreach ($request->file('Images') as $image) {
+                    $path = $image->store('property_images', 'public');
+                    $property->images()->create(['image_path' => $path]);
+                    // Log the uploaded image path
+                    \Log::info('Image uploaded: ', ['path' => $path]);
+                }
+            }
+
+            return redirect()->route('admin.addproperty')->with('success', 'Property saved successfully!');
+        } catch (\Exception $e) {
+            \Log::error('Failed to save property: ' . $e->getMessage());
+            return redirect()->route('admin.addproperty')->with('error', 'Failed to save property. Error: ' . $e->getMessage());
+        }
     }
+
     public function Property(){
 
         $properties = property::orderBy('id','desc')->get();
@@ -61,6 +92,7 @@ class AdminController extends Controller
         return redirect()->route('admin.property');
 
     }
+    
     public function EditProperty($Property)
     {
         $apartment = property::Find($Property);

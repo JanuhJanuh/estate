@@ -1,70 +1,87 @@
-
-<nav class="main-header navbar navbar-expand navbar-dark">
-    <!-- Left navbar links -->
-    <ul class="navbar-nav">
-
-      <li class="nav-item">
-
-
-       <a class="nav-link" data-widget="control-sidebar" href="#" role="button" data-widget="pushmenu"><i class="fas fa-bars"></i></a>
-      </li>
-      <li class="nav-item d-none d-sm-inline-block">
-        <a href="{{route('admin.dashboard')}}" class="nav-link" >Home</a>
-      </li>
-      <li class="nav-item d-none d-sm-inline-block">
-        <a href="#" class="nav-link">Contact</a>
-      </li>
-    </ul>
-
-    <!-- Right navbar links -->
-    <ul class="navbar-nav ml-auto">
-      <!-- Navbar Search -->
-      <li class="nav-item">
-        <a class="nav-link" data-widget="navbar-search" href="#" role="button">
-          <i class="fas fa-search"></i>
-        </a>
-        <div class="navbar-search-block">
-          <form class="form-inline">
-            <div class="input-group input-group-sm">
-              <input class="form-control form-control-navbar" type="search" placeholder="Search" aria-label="Search">
-              <div class="input-group-append">
-                <button class="btn btn-navbar" type="submit">
-                  <i class="fas fa-search"></i>
-                </button>
-                <button class="btn btn-navbar" type="button" data-widget="navbar-search">
-                  <i class="fas fa-user"></i>
-                </button>
-              </div>
-            </div>
-          </form>
-        </div>
-      </li>
-
-
-      <li class="nav-item">
-        <a class="nav-link" data-widget="fullscreen" href="#" role="button">
-          <i class="fas fa-expand-arrows-alt"></i>
-        </a>
-      </li>
-
-<li class="nav-item">
-      <div class="btn-group">
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+    <a class="navbar-brand" href="{{ route('admin.dashboard') }}">RealEstate Admin</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav ms-auto">
+            <li class="nav-item">
+                <a class="nav-link" href="{{ route('admin.dashboard') }}">Dashboard</a>
+            </li>
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" id="propertyDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    Properties
+                </a>
+                <ul class="dropdown-menu" aria-labelledby="propertyDropdown">
+                    <li><a class="dropdown-item" href="{{ route('admin.addproperty') }}">Add Property</a></li>
+                    <li><a class="dropdown-item" href="{{ route('admin.property') }}">View Properties</a></li>
+                    <li><a class="dropdown-item" href="#">Manage Properties</a></li>
+                </ul>
+            </li>
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" id="managerDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    Management
+                </a>
+                <ul class="dropdown-menu" aria-labelledby="managerDropdown">
+                    <li><a class="dropdown-item" href="{{ route('admin.addmanager') }}">Add Management Personnel</a></li>
+                    <li><a class="dropdown-item" href="{{ route('admin.managers') }}">View Management</a></li>
+                </ul>
+            </li>
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" id="tenantDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    Tenants
+                </a>
+                <ul class="dropdown-menu" aria-labelledby="tenantDropdown">
+                    <li><a class="dropdown-item" href="#">Add Tenant</a></li>
+                    <li><a class="dropdown-item" href="#">View Tenants</a></li>
+                    <li><a class="dropdown-item" href="#">Manage Tenants</a></li>
+                </ul>
+            </li>
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" id="rentDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    Rent Payment
+                </a>
+                <ul class="dropdown-menu" aria-labelledby="rentDropdown">
+                    <li><a class="dropdown-item" href="#">Paid</a></li>
+                    <li><a class="dropdown-item" href="#">Pending</a></li>
+                    <li><a class="dropdown-item" href="#">Invoice</a></li>
+                </ul>
+            </li>
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" id="customerCareDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    Customer Care
+                </a>
+                <ul class="dropdown-menu" aria-labelledby="customerCareDropdown">
+                    <li><a class="dropdown-item" href="#">Email</a></li>
+                    <li><a class="dropdown-item" href="#">Contact Us</a></li>
+                    <li><a class="dropdown-item" href="#">Complaints</a></li>
+                </ul>
+            </li>
+            <li class="nav-item dropdown hover-dropdown">
+                <div class="btn-group">
                     <button type="button" class="btn btn-tool dropdown-toggle" data-toggle="dropdown">
-                      <i class="fas fa-user">{{Auth()->User()->UserName }}</i>
+                        <i class="fas fa-user"></i> {{ Auth()->user()->UserName }}
                     </button>
                     <div class="dropdown-menu dropdown-menu-right" role="menu">
-                      <a href="#" class="dropdown-item">Profile</a>
-                      <a href="#" class="dropdown-item">Change Password</a>
-
-        <a><form action="{{ route('admin.logout') }}" method="POST">
-    @csrf
-    <button class="dropdown-item">LogOut</button>
-     </form></a>
-        </div>
+                        <a href="#" class="dropdown-item">Profile</a>
+                        <a href="#" class="dropdown-item">Change Password</a>
+                        <a href="{{ route('admin.logout') }}" class="dropdown-item">Logout</a>
+                    </div>
+                </div>
+            </li>
+        </ul>
     </div>
-    </li>
-</li>
-    </ul>
-  </nav>
-  <script>$('.sidebar-toggle-btn').PushMenu(options)</script>
+</nav>
 
+<script>
+    // Add hover functionality to dropdowns
+    document.querySelectorAll('.hover-dropdown').forEach(function(el) {
+        el.addEventListener('mouseover', function() {
+            this.querySelector('.dropdown-menu').classList.add('show');
+        });
+
+        el.addEventListener('mouseleave', function() {
+            this.querySelector('.dropdown-menu').classList.remove('show');
+        });
+    });
+</script>

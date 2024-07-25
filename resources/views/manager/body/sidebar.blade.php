@@ -24,25 +24,7 @@
                 </div>
             </li>
 
-            <!-- Manage Apartment   -->
-            <li class="nav-item dropdown">
-                <div class="card">
-                    <div class="card-body">
-                        <h6 class="card-title">Apartment Management</h6>
-                        <ul class="nav flex-column dropdown-menu">
-                            <li class="nav-item">
-                                <a class="nav-link" href="{{ route('manager.manageapartmentform') }}">Manage Rooms</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="#">View Units</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="#">Manage Payments</a>
-                            </li>
-                        </ul>
-                    </div>
-                </div>
-            </li>
+
             <!-- Tenant Management Dropdown -->
             <li class="nav-item dropdown">
                 <div class="card">
@@ -50,10 +32,10 @@
                         <h6 class="card-title">Tenant Management</h6>
                         <ul class="nav flex-column dropdown-menu">
                             <li class="nav-item">
-                                <a class="nav-link" href="#">Add Tenant</a>
+                                <a class="nav-link" href="{{ route('manager.addtenant') }}">Add Tenant</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" href="#">View Tenants</a>
+                                <a class="nav-link" href="{{ route('manager.view_tenants') }}">View Tenants</a>
                             </li>
                             <li class="nav-item">
                                 <a class="nav-link" href="#">Manage Payments</a>
@@ -87,10 +69,30 @@
                         <h6 class="card-title">Finance Management</h6>
                         <ul class="nav flex-column dropdown-menu">
                             <li class="nav-item">
-                                <a class="nav-link" href="#">Add Payment</a>
+                                <a class="nav-link" href="#">Rent Payment</a>
                             </li>
                             <li class="nav-item">
                                 <a class="nav-link" href="#">View Payments</a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </li>
+
+              <!-- Manage Apartment   -->
+              <li class="nav-item dropdown">
+                <div class="card">
+                    <div class="card-body">
+                        <h6 class="card-title">Apartment Management</h6>
+                        <ul class="nav flex-column dropdown-menu">
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ route('manager.manageapartmentform') }}">Manage Rooms</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ route('manager.apartmentunits') }}">View Units</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ route('manager.showapartmentunits') }}">Show Units2</a>
                             </li>
                         </ul>
                     </div>

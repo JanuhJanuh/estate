@@ -28,7 +28,7 @@ class LoginController extends Controller
             return redirect()->intended('/tenant/dashboard');
         }
 
-        
+
         return $this->sendFailedLoginResponse($request);
     }
 
@@ -50,7 +50,7 @@ class LoginController extends Controller
                 break;
         }
 
-        if ($user && Hash::check($credentials['password'], $user->password)) {
+        if ($user && Hash::check($credentials['password'], $user->Password)) {
             Auth::guard($guard)->login($user, $request->filled('remember'));
             return true;
         }
@@ -73,6 +73,6 @@ class LoginController extends Controller
         $request->session()->invalidate();
         $request->session()->regenerateToken();
 
-        return redirect('/');
+        return redirect('homepage');
     }
 }

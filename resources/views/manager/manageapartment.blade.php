@@ -6,7 +6,6 @@
         <div class="col-md-12">
             <h3 class="text-center mb-4">Manage Apartment Units</h3>
 
-            <!-- Display allocated apartment and total units -->
             @if($apartment)
                 <div class="alert alert-info">
                     <strong>{{ $apartment->PName }}</strong> <br>
@@ -18,21 +17,18 @@
                 </div>
             @endif
 
-            <!-- Display success message -->
             @if(session('success'))
                 <div class="alert alert-success" role="alert">
                     {{ session('success') }}
                 </div>
             @endif
 
-            <!-- Display error message -->
             @if(session('error'))
                 <div class="alert alert-danger" role="alert">
                     {{ session('error') }}
                 </div>
             @endif
 
-            <!-- Display validation errors -->
             @if ($errors->any())
                 <div class="alert alert-danger">
                     <ul>
@@ -44,7 +40,6 @@
             @endif
 
             <form method="POST" action="{{ route('manager.manageunits') }}" enctype="multipart/form-data">
-
                 @csrf
                 <div class="form-group mb-4">
                     <label for="room_type">Room Type</label>
@@ -76,11 +71,21 @@
                 <div id="room-images-container" class="mb-4">
                     <label for="room_images">Room Images</label>
                     <div class="form-group input-group mb-2">
-                        <input type="file" id="room_images" name="room_images_0[]" class="form-control-file">
+                        <input type="file" id="room_images" name="room_images_0[]" class="form-control-file" multiple>
                         <div class="input-group-append">
                             <button type="button" class="btn btn-secondary add-room-image"><i class="fas fa-plus"></i></button>
                         </div>
                     </div>
+                </div>
+
+                <div class="form-group mb-4">
+                    <label for="amenities">Amenities</label>
+                    <textarea id="amenities" name="amenities" class="form-control" placeholder="List of amenities"></textarea>
+                </div>
+
+                <div class="form-group mb-4">
+                    <label for="overview">Overview</label>
+                    <textarea id="overview" name="overview" class="form-control" placeholder="Overview of the unit"></textarea>
                 </div>
 
                 <button type="submit" class="btn btn-primary">Submit</button>
@@ -125,7 +130,6 @@ document.addEventListener('DOMContentLoaded', function () {
         `;
         roomNumbersContainer.appendChild(newRoomNumbersInput);
 
-        // Add event listener to the remove button
         newRoomNumbersInput.querySelector('.remove-room-number').addEventListener('click', function () {
             this.parentElement.parentElement.remove();
         });
@@ -135,7 +139,7 @@ document.addEventListener('DOMContentLoaded', function () {
         let newRoomImagesInput = document.createElement('div');
         newRoomImagesInput.classList.add('form-group', 'input-group', 'mb-2');
         newRoomImagesInput.innerHTML = `
-            <input type="file" name="room_images_${roomImagesCount}[]" class="form-control-file">
+            <input type="file" name="room_images_${roomImagesCount}[]" class="form-control-file" multiple>
             <div class="input-group-append">
                 <button type="button" class="btn btn-danger remove-room-image"><i class="fas fa-minus"></i></button>
             </div>
@@ -143,7 +147,6 @@ document.addEventListener('DOMContentLoaded', function () {
         roomImagesContainer.appendChild(newRoomImagesInput);
         roomImagesCount++;
 
-        // Add event listener to the remove button
         newRoomImagesInput.querySelector('.remove-room-image').addEventListener('click', function () {
             this.parentElement.parentElement.remove();
         });
