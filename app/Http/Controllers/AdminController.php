@@ -40,21 +40,17 @@ class AdminController extends Controller
 
     public function SaveProperty(Request $request)
     {
-        // Validate request data
         $request->validate([
             'PName' => 'required|string|max:255',
             'PropertyType' => 'required|string',
             'Address' => 'required|string|max:255',
             'Description' => 'required|string',
             'Units' => 'required|integer',
-            'Images.*' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'Images' => 'required|array',
+            'Images.*' => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048',
         ]);
 
         try {
-            // Log the request data
-            \Log::info('Request data: ', $request->all());
-
-            // Create new property
             $property = Property::create([
                 'PName' => $request->PName,
                 'PropertyType' => $request->PropertyType,
@@ -63,25 +59,16 @@ class AdminController extends Controller
                 'Units' => $request->Units,
             ]);
 
-            // Log the created property
-            \Log::info('Property created: ', $property->toArray());
-
-            // Handle image uploads
             if ($request->hasFile('Images')) {
                 foreach ($request->file('Images') as $image) {
-                    // Store the image in the public disk under property_images folder
-                    $filename = $image->store('property_images', 'public');
+                    $filename = time() . '_' . $image->getClientOriginalName();
+                    $image->storeAs('property_images', $filename, 'public');
 
-                    // Save the image path to the database with the "property_images/" prefix
-                    $property->images()->create(['image_path' => 'property_images/' . basename($filename)]);
-
-
-                    // Log the uploaded image path
-                    \Log::info('Image uploaded: ', ['path' => 'property_images/' . basename($filename)]);
+                    $property->images()->create(['image_path' => "property_images/$filename"]);
                 }
             }
 
-            return redirect()->route('admin.addproperty')->with('success', 'Property saved successfully!');
+            return redirect()->route('admin.addproperty')->with('success', 'Property and images saved successfully!');
         } catch (\Exception $e) {
             \Log::error('Failed to save property: ' . $e->getMessage());
             return redirect()->route('admin.addproperty')->with('error', 'Failed to save property. Error: ' . $e->getMessage());

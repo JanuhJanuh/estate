@@ -74,7 +74,7 @@ Route::middleware(['auth:manager'])->group(function () {
     Route::get('/manager/tenants/{id}', [TenantController::class, 'TenantDetails'])->name('manager.tenant_details');
     Route::get('/manager/{id}/edit_tenant', [TenantController::class, 'EditTenant'])->name('manager.edit_tenant');
     Route::put('/manager/update_tenant/{id}', [TenantController::class, 'UpdateTenant'])->name('manager.update_tenant');
-    
+
     Route::get('/manager/allocate/{tenant_id}', [TenantController::class, 'showAllocateRoomForm'])->name('manager.allocate_room');
     Route::post('/manager/check_in', [TenantController::class, 'allocateRoom'])->name('manager.roomcheck_in');
 
