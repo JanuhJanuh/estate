@@ -22,10 +22,10 @@ class Managers extends Authenticatable
         'DOB' => 'date',
     ];
 
-    public function setPasswordAttribute($value)
-    {
-        $this->attributes['Password'] = Hash::make($value);
-    }
+    // public function setPasswordAttribute($value)
+    // {
+    //     $this->attributes['Password'] = Hash::make($value);
+    // }
 
     public function allocation()
     {

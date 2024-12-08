@@ -4,7 +4,7 @@
 <!-- Apartments Section -->
 <section class="content">
   <!-- Main content -->
-  <header class="content-header" style="height: 400px; background-size: cover; background-position: center;">
+  <header class="content-header" style="height: 400px; background: url('{{ asset('property_images/apart3.jpg') }}') no-repeat center center; background-size: cover;">
     <div class="container-fluid">
       <div class="row align-items-center" style="height: 100%;">
         <div class="col-lg-6">
@@ -18,28 +18,41 @@
     </div>
   </header>
 
-  <div class="container-fluid">
-    <h1 class="text-center mb-5">Available Apartments</h1>
+  <!-- Featured Apartments Section -->
+  <div class="container my-5">
     <div class="row">
-      @foreach($apartments as $apartment)
-        <div class="col-md-4 mb-4">
-          <div class="card shadow-sm" style="height: 350px;">
-            <div class="position-relative">
-              <img src="{{ asset('property_images/'.$apartment->images->first()->image_path) }}" alt="Property Image" style="width: 100%; height: 200px; object-fit: cover;">
-              <div class="card-img-overlay">
-                <h5 class="card-title text-white">{{ $apartment->PName }}</h5>
-                <p class="card-text text-white"><strong>Address:</strong> {{ $apartment->Address }}</p>
-                <a href="#" class="btn btn-primary stretched-link">View More</a>
-              </div>
-            </div>
-            <div class="card-body">
-              <p class="card-text">{{ \Illuminate\Support\Str::limit($apartment->Description, 90, '...') }}</p>
-            </div>
+      <div class="col-md-12">
+        <div class="card animated fadeInUp shadow-lg rounded">
+          <div class="card-header text-center text-white" style="background: url('{{ asset('property_images/apart3.jpg') }}') no-repeat center center; background-size: cover; border-radius: 10px 10px 0 0;">
+            <h5 class="card-title">Featured Apartments</h5>
+          </div>
+          <div class="card-body">
+          @foreach($apartments as $apartment)
+    <div class="row mb-3 border rounded p-3 shadow-sm">
+        <div class="col-md-4">
+            @if($apartment->images->isNotEmpty())
+            <img src="{{ asset('storage/' . $apartment->images->first()->image_path) }}" alt="Property Image" style="width: 100px; height: auto;">
+
+            @else
+                <img src="{{ asset('storage/apart1.jpg') }}" alt="Default Image" class="img-fluid rounded">
+            @endif
+        </div>
+        <div class="col-md-8">
+            <h5 class="card-title">{{ $apartment->PName }}</h5>
+            <p class="card-text"><strong>Address:</strong> {{ $apartment->Address }}</p>
+            <p class="card-text"><strong>Rooms:</strong> {{ $apartment->Units }}</p>
+            <p class="card-text">{{ \Illuminate\Support\Str::limit($apartment->Description, 90, '...') }}</p>
+            <a href="#" class="btn btn-primary rounded-pill">View More</a>
+        </div>
+    </div>
+@endforeach
+
           </div>
         </div>
-      @endforeach
+      </div>
     </div>
   </div>
+
 </section>
 <!-- End Apartments Section -->
 @endsection

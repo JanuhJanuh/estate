@@ -21,9 +21,9 @@
       <div class="col-md-3">
         <h5>Contact Us</h5>
         <ul class="list-unstyled">
-          <li><i class="fas fa-map-marker-alt"></i> 123 Real Estate St, City</li>
-          <li><i class="fas fa-phone"></i> +1 234 567 890</li>
-          <li><i class="fas fa-envelope"></i> info@realestate.com</li>
+          <li><i class="fas fa-map-marker-alt"></i> IrisCorp Agencies</li>
+          <li><i class="fas fa-phone"></i> +2547 0123 7958</li>
+          <li><i class="fas fa-envelope"></i> iriscorp@gmail.com</li>
         </ul>
       </div>
       <!-- Subscribe -->

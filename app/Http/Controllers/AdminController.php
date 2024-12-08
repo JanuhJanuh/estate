@@ -30,7 +30,9 @@ class AdminController extends Controller
         return redirect('/');
     }
 
-
+   public function AddManager(){
+    return view('admin.addmanager');
+   }
 
     public function AddProperty(){
         return view('admin.addproperty');
@@ -67,10 +69,15 @@ class AdminController extends Controller
             // Handle image uploads
             if ($request->hasFile('Images')) {
                 foreach ($request->file('Images') as $image) {
-                    $path = $image->store('property_images', 'public');
-                    $property->images()->create(['image_path' => $path]);
+                    // Store the image in the public disk under property_images folder
+                    $filename = $image->store('property_images', 'public');
+
+                    // Save the image path to the database with the "property_images/" prefix
+                    $property->images()->create(['image_path' => 'property_images/' . basename($filename)]);
+
+
                     // Log the uploaded image path
-                    \Log::info('Image uploaded: ', ['path' => $path]);
+                    \Log::info('Image uploaded: ', ['path' => 'property_images/' . basename($filename)]);
                 }
             }
 
@@ -87,12 +94,25 @@ class AdminController extends Controller
         return view('admin.property', compact('properties'));
 
     }
+
+
+    public function ShowProperty($id)
+    {
+        $property = Property::with(['apartmentRooms.images'])->findOrFail($id);
+
+        $totalRooms = $property->apartmentRooms->count();
+        $vacantRooms = $property->apartmentRooms->where('status', 'vacant')->count();
+        $occupiedRooms = $property->apartmentRooms->where('status', 'occupied')->count();
+        return view('admin.property_details', compact('property', 'totalRooms', 'vacantRooms', 'occupiedRooms'));
+    }
+
+
     public function DeleteProperty(Request $request, property $Property){
         $Property->delete();
         return redirect()->route('admin.property');
 
     }
-    
+
     public function EditProperty($Property)
     {
         $apartment = property::Find($Property);
@@ -110,6 +130,7 @@ class AdminController extends Controller
 
 
     }
+
 
 
 }

@@ -3,15 +3,15 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\Property; // Assuming you have an Apartment model
+use App\Models\Property; // Property Model
 
 class ApartmentController extends Controller
 {
     public function Apartments()
     {
-        $apartments = Property::all();
+        $apartments = Property::with('images')->get();
         return view('apartments', compact('apartments'));
     }
+
+
 }
-
-

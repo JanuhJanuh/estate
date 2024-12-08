@@ -33,8 +33,8 @@
                             Apartments
                         </a>
                         <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                            <a class="dropdown-item" href="{{ route('estate.apartments')}}">2/3 Bedrooms</a>
-                            <a class="dropdown-item" href="{{ route('estate.apartments')}}">1 Bedrooms</a>
+                            <a class="dropdown-item" href="{{ route('estate.apartments') }}">2/3 Bedrooms</a>
+                            <a class="dropdown-item" href="{{ route('estate.apartments') }}">1 Bedrooms</a>
                             <a class="dropdown-item" href="#">Single Rooms</a>
                         </div>
                     </li>

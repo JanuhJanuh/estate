@@ -44,9 +44,11 @@ Route::middleware(['auth:admin'])->group(function () {
     Route::delete('/admin/{Property}', [AdminController::class, 'DeleteProperty'])->name('admin.deleteproperty');
     Route::get('/admin/{Property}/edit', [AdminController::class, 'EditProperty'])->name('admin.editproperty');
     Route::put('/admin/{id}/update', [AdminController::class, 'Update'])->name('admin.update');
+    Route::get('/admin/property/{id}', [AdminController::class, 'ShowProperty'])->name('admin.property_details');
+
 
     // Manage Managers
-    Route::get('/admin/aptmanager', [ManagerController::class, 'AddManager'])->name('admin.addmanager');
+    Route::get('/admin/add_manager', [AdminController::class, 'AddManager'])->name('admin.addmanager');
     Route::post('/admin/savemgr', [ManagerController::class, 'SaveManager'])->name('admin.savemanager');
     Route::get('/admin/managers', [ManagerController::class, 'Managers'])->name('admin.managers');
     Route::get('/admin/edit/{managerid}', [ManagerController::class, 'EditManager'])->name('admin.editmanager');
@@ -54,6 +56,7 @@ Route::middleware(['auth:admin'])->group(function () {
     Route::get('/admin/allocatemgr/{managerid}', [ManagerController::class, 'AllocateManagerForm'])->name('admin.allocatemanager');
     Route::post('/admin/save/{managerid}/{apartmentid}', [ManagerController::class, 'saveAllocateManager'])->name('admin.saveallocatemanager');
     Route::get('/admin/viewManager/{managerid}', [ManagerController::class, 'viewManagement'])->name('admin.ViewManagement');
+
 });
 
 // Manager routes
@@ -71,7 +74,7 @@ Route::middleware(['auth:manager'])->group(function () {
     Route::get('/manager/tenants/{id}', [TenantController::class, 'TenantDetails'])->name('manager.tenant_details');
     Route::get('/manager/{id}/edit_tenant', [TenantController::class, 'EditTenant'])->name('manager.edit_tenant');
     Route::put('/manager/update_tenant/{id}', [TenantController::class, 'UpdateTenant'])->name('manager.update_tenant');
-
+    
     Route::get('/manager/allocate/{tenant_id}', [TenantController::class, 'showAllocateRoomForm'])->name('manager.allocate_room');
     Route::post('/manager/check_in', [TenantController::class, 'allocateRoom'])->name('manager.roomcheck_in');
 

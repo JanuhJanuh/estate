@@ -44,7 +44,8 @@
                                     <td>{{ $loop->iteration }}</td>
                                     <td>
                                         @if($Property->images->isNotEmpty())
-                                            <img src="{{ asset('storage/' . $Property->images->first()->image_path) }}" alt="Property Image" style="width: 100px; height: auto;">
+                                        <img src="{{ asset('storage/' . $Property->images->first()->image_path) }}" alt="Property Image" style="width: 100px; height: auto;">
+
                                         @else
                                             No Image
                                         @endif
@@ -54,7 +55,7 @@
                                     <td>{{ $Property->Units }}</td>
                                     <td>
                                         <form action="{{ route('admin.deleteproperty', $Property->id) }}" method="POST">
-                                            <a class="btn btn-success" href="#">View</a>
+                                            <a class="btn btn-success" href="{{ route('admin.property_details', $Property->id) }}">View</a>
                                             <a class="btn btn-primary" href="{{ route('admin.editproperty', $Property->id) }}">Edit</a>
                                             @csrf
                                             @method('DELETE')

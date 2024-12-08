@@ -45,19 +45,10 @@ class ManagerController extends Controller
 
         return view('manager.apartmentunits', compact('manager', 'apartmentRooms', 'managerAllocation'));
     }
-
-
-
-
-
     public function AddTenantform()
     {
         return view('manager.addtenantform');
     }
-
-
-
-
     public function SaveTenant(Request $request)
     {
         $request->validate([
@@ -80,18 +71,7 @@ class ManagerController extends Controller
         $imageName = time() . '.' . $request->id_image->extension();
         $request->id_image->move(public_path('tenant_images'), $imageName);
 
-        // Debugging line
-        // dd([
-        //     'Name' => $request->name,
-        //     'IDNumber' => $request->id_number,
-        //     'Gender' => $request->gender,
-        //     'Phone' => $request->phone,
-        //     'Phone2' => $request->phone2,
-        //     'Email' => $request->email,
-        //     'IDImage' => $imageName,
-        //     'role' => 'tenant',
-        //     'password' => Hash::make($request->id_number)
-        // ]);
+       
 
         // Create a new Tenant instance and save it to the database
         $tenant = Tenant::create([
@@ -111,11 +91,6 @@ class ManagerController extends Controller
             return redirect()->back()->with('error', 'Failed to register tenant.');
         }
     }
-
-
-
-
-
 
     public function getRoomNumbers($roomType)
     {
@@ -205,13 +180,6 @@ class ManagerController extends Controller
     }
 
 
-
-
-
-
-
-
-
     public function SaveManager(Request $request)
     {
         $request->validate([
@@ -251,13 +219,11 @@ class ManagerController extends Controller
         }
     }
 
- public function Managers()
+    public function Managers()
       {
         $managers = Managers::orderBy('id', 'asc')->get();
         return view('admin.management', compact('managers'));
       }
-
-
 
     public function EditManager($managerid)
     {
