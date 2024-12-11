@@ -44,8 +44,10 @@ Route::middleware(['auth:admin'])->group(function () {
     Route::delete('/admin/{Property}', [AdminController::class, 'DeleteProperty'])->name('admin.deleteproperty');
     Route::get('/admin/{Property}/edit', [AdminController::class, 'EditProperty'])->name('admin.editproperty');
     Route::put('/admin/{id}/update', [AdminController::class, 'Update'])->name('admin.update');
-    Route::get('/admin/property/{id}', [AdminController::class, 'ShowProperty'])->name('admin.property_details');
+    Route::get('/admin/property/{Property}', [ApartmentController::class, 'ShowProperty'])->name('admin.property_details');
 
+    //admin tenant routes
+    Route::get('/admin/addtenant', [AdminController::class, 'AddTenant'])->name('admin.addtenant');
 
     // Manage Managers
     Route::get('/admin/add_manager', [AdminController::class, 'AddManager'])->name('admin.addmanager');
@@ -54,7 +56,7 @@ Route::middleware(['auth:admin'])->group(function () {
     Route::get('/admin/edit/{managerid}', [ManagerController::class, 'EditManager'])->name('admin.editmanager');
     Route::put('/admin/update/{managerid}', [ManagerController::class, 'UpdateManager'])->name('admin.updatemanager');
     Route::get('/admin/allocatemgr/{managerid}', [ManagerController::class, 'AllocateManagerForm'])->name('admin.allocatemanager');
-    Route::post('/admin/save/{managerid}/{apartmentid}', [ManagerController::class, 'saveAllocateManager'])->name('admin.saveallocatemanager');
+    Route::post('/admin/save/{managerid}', [ManagerController::class, 'saveAllocateManager'])->name('admin.saveallocatemanager');
     Route::get('/admin/viewManager/{managerid}', [ManagerController::class, 'viewManagement'])->name('admin.ViewManagement');
 
 });

@@ -45,7 +45,7 @@
                 </a>
                 <ul class="nav flex-column ms-3">
                     <li class="nav-item">
-                        <a class="nav-link" href="#">Add Tenant</a>
+                        <a class="nav-link" href="{{ route('admin.addtenant') }}">Add Tenant</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="#">View Tenants</a>

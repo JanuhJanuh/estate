@@ -71,7 +71,7 @@ class ManagerController extends Controller
         $imageName = time() . '.' . $request->id_image->extension();
         $request->id_image->move(public_path('tenant_images'), $imageName);
 
-       
+
 
         // Create a new Tenant instance and save it to the database
         $tenant = Tenant::create([
@@ -271,6 +271,8 @@ class ManagerController extends Controller
         if ($existingAllocation) {
             return redirect()->back()->with('error', 'Manager is already allocated to an apartment!');
         }
+
+        // Create new allocation
         $allocation = new ManageMgr();
         $allocation->manager_id = $managerid;
         $allocation->apartment_id = $validatedData['apartment_id'];
@@ -281,6 +283,7 @@ class ManagerController extends Controller
 
         return redirect()->back()->with('success', 'Allocation done successfully!');
     }
+
 
     public function viewManagement($managerid)
     {

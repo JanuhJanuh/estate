@@ -37,61 +37,57 @@ class AdminController extends Controller
     public function AddProperty(){
         return view('admin.addproperty');
     }
+public function SaveProperty(Request $request)
+{
+    $request->validate([
+        'PName' => 'required|string|max:255',
+        'PropertyType' => 'required|string',
+        'Address' => 'required|string|max:255',
+        'Description' => 'required|string',
+        'Units' => 'required|integer',
+        'Images' => 'required|array',
+        'Images.*' => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+    ]);
 
-    public function SaveProperty(Request $request)
-    {
-        $request->validate([
-            'PName' => 'required|string|max:255',
-            'PropertyType' => 'required|string',
-            'Address' => 'required|string|max:255',
-            'Description' => 'required|string',
-            'Units' => 'required|integer',
-            'Images' => 'required|array',
-            'Images.*' => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+    try {
+        // Create the property
+        $property = Property::create([
+            'PName' => $request->PName,
+            'PropertyType' => $request->PropertyType,
+            'Address' => $request->Address,
+            'Description' => $request->Description,
+            'Units' => $request->Units,
         ]);
 
-        try {
-            $property = Property::create([
-                'PName' => $request->PName,
-                'PropertyType' => $request->PropertyType,
-                'Address' => $request->Address,
-                'Description' => $request->Description,
-                'Units' => $request->Units,
-            ]);
+        // Handle the image uploads
+        if ($request->hasFile('Images')) {
+            foreach ($request->file('Images') as $image) {
+                // Generate a unique file name
+                $filename = time() . '_' . $image->getClientOriginalName();
+                $image->storeAs('property_images', $filename, 'public');  // Store in public storage
 
-            if ($request->hasFile('Images')) {
-                foreach ($request->file('Images') as $image) {
-                    $filename = time() . '_' . $image->getClientOriginalName();
-                    $image->storeAs('property_images', $filename, 'public');
-
-                    $property->images()->create(['image_path' => "property_images/$filename"]);
-                }
+                // Save the image path to the database
+                $property->images()->create(['image_path' => "$filename"]);
             }
-
-            return redirect()->route('admin.addproperty')->with('success', 'Property and images saved successfully!');
-        } catch (\Exception $e) {
-            \Log::error('Failed to save property: ' . $e->getMessage());
-            return redirect()->route('admin.addproperty')->with('error', 'Failed to save property. Error: ' . $e->getMessage());
         }
+
+        return redirect()->route('admin.addproperty')->with('success', 'Property and images saved successfully!');
+    } catch (\Exception $e) {
+        \Log::error('Failed to save property: ' . $e->getMessage());
+        return redirect()->route('admin.addproperty')->with('error', 'Failed to save property. Error: ' . $e->getMessage());
     }
-
-    public function Property(){
-
-        $properties = property::orderBy('id','desc')->get();
-        return view('admin.property', compact('properties'));
-
-    }
+}
 
 
-    public function ShowProperty($id)
-    {
-        $property = Property::with(['apartmentRooms.images'])->findOrFail($id);
 
-        $totalRooms = $property->apartmentRooms->count();
-        $vacantRooms = $property->apartmentRooms->where('status', 'vacant')->count();
-        $occupiedRooms = $property->apartmentRooms->where('status', 'occupied')->count();
-        return view('admin.property_details', compact('property', 'totalRooms', 'vacantRooms', 'occupiedRooms'));
-    }
+  public function Property()
+{
+    $properties = Property::with('images')->orderBy('id', 'desc')->get();
+    return view('admin.property', compact('properties'));
+}
+
+
+
 
 
     public function DeleteProperty(Request $request, property $Property){
@@ -117,13 +113,19 @@ class AdminController extends Controller
 
 
     }
+    public function AddTenant()
+    {
+        $apartments = Property::with(['apartmentRooms' => function ($query) {
+            $query->where('status', 'Vacant'); // Filter rooms with status 'Vacant'
+        }])->get();
+
+        return view('admin.addtenantform', compact('apartments'));
+    }
+
+
 
 
 
 }
-
-
-// ADD/ MANAGER CARETAKERS    SET ROLES TO AVTIVE, APARTMENT ETC
-
 
 ?>

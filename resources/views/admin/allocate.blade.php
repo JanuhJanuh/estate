@@ -32,14 +32,19 @@
                             <!-- Display other manager details as needed -->
 
                             <h5 class="card-title">Select Apartment</h5>
-                            <form action="{{ route('admin.saveallocatemanager', ['managerid' => $Manager->id, 'apartmentid' => $Property->first()->id]) }}" method="POST">
-
+                            <!-- Check if there are properties available -->
+                            @if($Property->isEmpty())
+                                <div class="alert alert-warning" role="alert">
+                                    No apartments available for allocation.
+                                </div>
+                            @else
+                            <form action="{{ route('admin.saveallocatemanager', ['managerid' => $Manager->id]) }}" method="POST">
                                 @csrf
                                 <input type="hidden" name="manager_id" value="{{ $Manager->id }}">
 
                                 <div class="form-group">
                                     <label for="apartment_id">Choose an Apartment:</label>
-                                    <select name="apartment_id" id="apartment_id" class="form-control">
+                                    <select name="apartment_id" id="apartment_id" class="form-control" required>
                                         @foreach($Property as $apartment)
                                             <option value="{{ $apartment->id }}">{{ $apartment->PName }} - {{ $apartment->Address }}</option>
                                         @endforeach
@@ -58,6 +63,9 @@
 
                                 <button type="submit" class="btn btn-primary">Allocate</button>
                             </form>
+
+
+                            @endif
 
                             <!-- Success message -->
                             @if(session('success'))
