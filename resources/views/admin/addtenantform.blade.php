@@ -3,9 +3,9 @@
 @section('admin')
 <div class="container mt-5">
     <div class="row justify-content-center">
-        <div class="col-md-8">
+        <div class="col-md-10">
             <div class="card">
-                <div class="card-header bg-primary text-white">
+                <div class="card-header bg-primary text-white text-center">
                     <h4>Register New Tenant</h4>
                 </div>
                 <div class="card-body">
@@ -37,69 +37,69 @@
                         </div>
                     @endif
 
-                    <form id="tenant-form" method="POST" action="{{ route('manager.savetenant') }}" enctype="multipart/form-data">
-                        @csrf
+                    <form id="tenant-form" method="POST" action="{{ route('admin.savetenantdata') }}" enctype="multipart/form-data">
+                    @csrf
+                        <div class="row">
+                            <!-- Left Column -->
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="name">Tenant Name</label>
+                                    <input type="text" name="name" class="form-control form-control-sm" id="name" required value="{{ old('name') }}">
+                                </div>
+                                <div class="form-group">
+                                    <label for="id_number">ID Number</label>
+                                    <input type="number" name="id_number" class="form-control form-control-sm" id="id_number" required value="{{ old('id_number') }}">
+                                </div>
+                                <div class="form-group">
+                                    <label for="phone">Phone</label>
+                                    <input type="text" name="phone" class="form-control form-control-sm" id="phone" required value="{{ old('phone') }}">
+                                </div>
+                                <div class="form-group">
+                                    <label for="email">Email</label>
+                                    <input type="email" name="email" class="form-control form-control-sm" id="email" required value="{{ old('email') }}">
+                                </div>
+                                <div class="form-group">
+                                    <label for="gender">Gender</label>
+                                    <select name="gender" class="form-control form-control-sm" id="gender" required>
+                                        <option value="">Select Gender</option>
+                                        <option value="Male" @if(old('gender') == 'Male') selected @endif>Male</option>
+                                        <option value="Female" @if(old('gender') == 'Female') selected @endif>Female</option>
+                                        <option value="Other" @if(old('gender') == 'Other') selected @endif>Other</option>
+                                    </select>
+                                </div>
+                            </div>
 
-                        <div class="form-group">
-                            <label for="name">Tenant Name</label>
-                            <input type="text" name="name" class="form-control" id="name" required value="{{ old('name') }}">
+                            <!-- Right Column -->
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="apartment">Select Apartment</label>
+                                    <select name="apartment_id" class="form-control form-control-sm" id="apartment" required>
+                                        <option value="">Select Apartment</option>
+                                        @foreach($apartments as $apartment)
+                                            <option value="{{ $apartment->id }}">{{ $apartment->PName }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="room">Select Room</label>
+                                    <select name="room_id" class="form-control form-control-sm" id="room" required>
+                                        <option value="">Select Room</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="entry_date">Entry Date</label>
+                                    <input type="date" name="entry_date" class="form-control form-control-sm" id="entry_date" required value="{{ old('entry_date') }}">
+                                </div>
+                                <br></br>
+                                <div class="form-group">
+                                    <label for="id_image">ID Image</label>
+                                    <input type="file" name="id_image" class="form-control-file form-control-sm" id="id_image" accept="image/*" required>
+                                </div>
+                            </div>
                         </div>
-
-                        <div class="form-group">
-                            <label for="id_number">ID Number</label>
-                            <input type="number" name="id_number" class="form-control" id="id_number" required value="{{ old('id_number') }}">
+                        <div class="text-center mt-4">
+                            <button type="submit" class="btn btn-primary btn-sm">Register Tenant</button>
                         </div>
-
-                        <div class="form-group">
-                            <label for="phone">Phone</label>
-                            <input type="text" name="phone" class="form-control" id="phone" required value="{{ old('phone') }}">
-                        </div>
-
-                        <div class="form-group">
-                            <label for="email">Email</label>
-                            <input type="email" name="email" class="form-control" id="email" required value="{{ old('email') }}">
-                        </div>
-
-                        <div class="form-group">
-                            <label for="gender">Gender</label>
-                            <select name="gender" class="form-control" id="gender" required>
-                                <option value="">Select Gender</option>
-                                <option value="Male" @if(old('gender') == 'Male') selected @endif>Male</option>
-                                <option value="Female" @if(old('gender') == 'Female') selected @endif>Female</option>
-                                <option value="Other" @if(old('gender') == 'Other') selected @endif>Other</option>
-                            </select>
-                        </div>
-
-                        <hr>
-
-                        <div class="form-group">
-                            <label for="apartment">Select Apartment</label>
-                            <select name="apartment_id" class="form-control" id="apartment" required>
-                                <option value="">Select Apartment</option>
-                                @foreach($apartments as $apartment)
-                                    <option value="{{ $apartment->id }}">{{ $apartment->PName }}</option>
-                                @endforeach
-                            </select>
-                        </div>
-
-                        <div class="form-group">
-                            <label for="room">Select Room</label>
-                            <select name="room_id" class="form-control" id="room" required>
-                                <option value="">Select Room</option>
-                            </select>
-                        </div>
-
-                        <div class="form-group">
-                            <label for="entry_date">Entry Date</label>
-                            <input type="date" name="entry_date" class="form-control" id="entry_date" required value="{{ old('entry_date') }}">
-                        </div>
-
-                        <div class="form-group">
-                            <label for="id_image">ID Image</label>
-                            <input type="file" name="id_image" class="form-control-file" id="id_image" accept="image/*" required>
-                        </div>
-
-                        <button type="submit" class="btn btn-primary">Register Tenant</button>
                     </form>
                 </div>
             </div>
@@ -108,6 +108,7 @@
 </div>
 
 <script>
+    //kuload the room vacant rooms dynamicaly after selecting an apartment/property
     document.getElementById('apartment').addEventListener('change', function () {
         const apartmentId = this.value;
         const roomsDropdown = document.getElementById('room');
@@ -127,5 +128,4 @@
         }
     });
 </script>
-
 @endsection

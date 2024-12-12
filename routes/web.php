@@ -48,6 +48,7 @@ Route::middleware(['auth:admin'])->group(function () {
 
     //admin tenant routes
     Route::get('/admin/addtenant', [AdminController::class, 'AddTenant'])->name('admin.addtenant');
+    Route::post('/admin/savetenant', [AdminController::class, 'SaveTenantData'])->name('admin.savetenantdata');
 
     // Manage Managers
     Route::get('/admin/add_manager', [AdminController::class, 'AddManager'])->name('admin.addmanager');
