@@ -59,19 +59,27 @@
             </li>
             <li class="nav-item dropdown hover-dropdown">
                 <div class="btn-group">
-                    <button type="button" class="btn btn-tool dropdown-toggle" data-toggle="dropdown">
+                    <button type="button" class="btn btn-tool dropdown-toggle" data-bs-toggle="dropdown">
                         <i class="fas fa-user"></i> {{ Auth()->user()->UserName }}
                     </button>
-                    <div class="dropdown-menu dropdown-menu-right" role="menu">
-                        <a href="#" class="dropdown-item">Profile</a>
-                        <a href="#" class="dropdown-item">Change Password</a>
-                        <a href="{{ route('admin.logout') }}" class="dropdown-item">Logout</a>
-                    </div>
+                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
+                        <li><a href="#" class="dropdown-item">Profile</a></li>
+                        <li><a href="#" class="dropdown-item">Change Password</a></li>
+                        <li>
+                            <a href="#" class="dropdown-item" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                                Logout
+                            </a>
+                        </li>
+                    </ul>
                 </div>
             </li>
         </ul>
     </div>
 </nav>
+
+<form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
+    @csrf
+</form>
 
 <script>
     // Add hover functionality to dropdowns
@@ -79,7 +87,6 @@
         el.addEventListener('mouseover', function() {
             this.querySelector('.dropdown-menu').classList.add('show');
         });
-
         el.addEventListener('mouseleave', function() {
             this.querySelector('.dropdown-menu').classList.remove('show');
         });

@@ -2,20 +2,20 @@
 
 namespace App\Http\Controllers;
 
-
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
-use App\Models\ApartmentRoom;
-use App\Models\ApartmentBooking;
 use Illuminate\Http\Request;
 use App\Models\Tenant;
+use App\Models\ApartmentRoom;
+use App\Models\ApartmentBooking;
 
 class TenantController extends Controller
 {
+    // Tenant Dashboard
     public function tenant_dashboard()
     {
         $tenant = Auth::guard('tenant')->user();
-        $booking = $tenant->booking;
+        $booking = $tenant->booking; // Assuming 'booking' is a valid relationship
         $room = $booking ? $booking->room : null;
         $apartment = $booking ? $booking->apartment : null;
         $entry_date = $booking ? $booking->entry_date : null;
@@ -23,20 +23,29 @@ class TenantController extends Controller
         return view('tenants.tenant_dashboard', compact('tenant', 'apartment', 'room', 'entry_date'));
     }
 
-
-
+    // List All Tenants
     public function Tenants()
     {
-        $tenants = Tenant::with('booking.room')->get();
+        $manager = auth()->user();
+        $apartmentId = $manager->allocation->apartment_id;
+        $tenants = Tenant::whereHas('booking', function($query) use ($apartmentId) {
+            $query->where('apartment_id', $apartmentId);  // Filter tenants by apartment_id
+        })
+        ->with('booking.room')  // Load room details
+        ->get();
+
         return view('manager.tenants_form', compact('tenants'));
     }
 
+
+    // Edit Tenant View
     public function EditTenant($id)
     {
         $tenant = Tenant::findOrFail($id);
         return view('manager.edit_tenant', compact('tenant'));
     }
 
+    // Tenant Details View
     public function TenantDetails($id)
     {
         $tenant = Tenant::with(['booking.room', 'apartment'])->findOrFail($id);
@@ -44,13 +53,14 @@ class TenantController extends Controller
         return view('manager.tenant_details', compact('tenant'));
     }
 
+    // Update Tenant Details
     public function UpdateTenant(Request $request, $id)
     {
         $tenant = Tenant::findOrFail($id);
 
         $request->validate([
             'name' => 'required|string|max:255',
-            'id_number' => 'required|numeric|unique:tenants,IDNumber,' . $id,
+            'id_number' => 'required|numeric|unique:tenants,id_number,' . $id,
             'phone' => 'required|string',
             'phone2' => 'nullable|string',
             'email' => 'required|email',
@@ -66,7 +76,6 @@ class TenantController extends Controller
         $tenant->Gender = $request->gender;
 
         if ($request->hasFile('id_image')) {
-            // Upload and store the new ID Image
             $imageName = time() . '.' . $request->id_image->extension();
             $request->id_image->move(public_path('tenant_images'), $imageName);
             $tenant->IDImage = $imageName;
@@ -77,21 +86,23 @@ class TenantController extends Controller
         return redirect()->route('manager.tenants_form')->with('success', 'Tenant updated successfully.');
     }
 
+    // Show Allocate Room Form
     public function showAllocateRoomForm($tenant_id)
     {
         $tenant = Tenant::findOrFail($tenant_id);
         $manager = auth()->user();
-
         $apartment = $manager->apartment;
+
         if (!$apartment) {
             return redirect()->route('manager.tenants')->with('error', 'No apartment associated with the manager.');
         }
 
-        $rooms = $apartment->apartmentRooms()->where('status', 'vacant')->get();
+        $rooms = $apartment->apartmentRooms()->where('status', 'Vacant')->get();
 
         return view('manager.allocate_form', compact('tenant', 'manager', 'apartment', 'rooms'));
     }
 
+    // Allocate Room to Tenant
     public function allocateRoom(Request $request)
     {
         $request->validate([
@@ -103,22 +114,22 @@ class TenantController extends Controller
         $room = ApartmentRoom::findOrFail($request->room_id);
         $tenant = Tenant::findOrFail($request->tenant_id);
 
-        // Check if the tenant is already allocated to a room
+        // Check if tenant is already allocated
         $existingBooking = ApartmentBooking::where('tenant_id', $tenant->id)->first();
 
         if ($existingBooking) {
-            $roomNumber = $existingBooking->room->room_number; // Assuming you have a 'room_number' field in ApartmentRoom model
+            $roomNumber = $existingBooking->room->room_number;
             return redirect()->back()->with('error', 'Tenant already allocated to room number ' . $roomNumber);
         }
 
-        if ($room->status !== 'vacant') {
+        if ($room->status !== 'Vacant') {
             return redirect()->back()->with('error', 'Room is already occupied.');
         }
 
-        // Update room status to 'Occupied'
-        $room->status = 'Occupied';
-        $room->save();
+        // Update room status
+        $room->update(['status' => 'Occupied']);
 
+        // Create booking record
         ApartmentBooking::create([
             'tenant_id' => $tenant->id,
             'apartment_id' => $room->apartment_id,
@@ -129,10 +140,4 @@ class TenantController extends Controller
 
         return redirect()->route('manager.view_tenants')->with('success', 'Room allocated successfully.');
     }
-
-
-
-
-
-
 }

@@ -1,5 +1,5 @@
 <nav class="navbar navbar-expand-md navbar-light" style="background-color: #ccffe6;">
-    <a class="navbar-brand" href="#">Real Estate Admin</a>
+    <a class="navbar-brand" href="{{ route('manager.dashboard') }}">Real Estate Admin</a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
     </button>
@@ -23,8 +23,13 @@
             <li class="nav-item">
                 <a class="nav-link" href="#">Settings</a>
             </li>
+
+            <!-- Logout Form -->
             <li class="nav-item">
-                <a class="nav-link" href="#">Logout</a>
+                <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: inline;">
+                    @csrf
+                    <button type="submit" class="nav-link btn btn-link" style="padding: 0; border: none; background: none;">Logout</button>
+                </form>
             </li>
         </ul>
     </div>

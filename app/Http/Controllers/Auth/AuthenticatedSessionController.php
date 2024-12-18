@@ -45,16 +45,28 @@ class AuthenticatedSessionController extends Controller
     /**
      * Destroy an authenticated session.
      */
-    public function destroy(Request $request): RedirectResponse
-    {
-        $guard = session('auth_guard');
+  /**
+ * Destroy an authenticated session.
+ */
+public function destroy(Request $request): RedirectResponse
+{
+    // Retrieve the guard from the session
+    $guard = session('auth_guard');
 
-        Auth::guard($guard)->logout();
-
-        $request->session()->invalidate();
-
-        $request->session()->regenerateToken();
-
-        return redirect('/');
+    if (!$guard) {
+        // If guard is not set, log a warning or handle the case as needed
+        return redirect('/')->with('error', 'Invalid session or already logged out.');
     }
+
+    // Log out using the specified guard
+    Auth::guard($guard)->logout();
+
+    // Invalidate the session and regenerate CSRF token
+    $request->session()->invalidate();
+    $request->session()->regenerateToken();
+
+    // Redirect to the home page or login page
+    return redirect('/');
+}
+
 }

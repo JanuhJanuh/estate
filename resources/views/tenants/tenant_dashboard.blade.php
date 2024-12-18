@@ -80,7 +80,9 @@
         </div>
     </div>
 
-  <!-- Deposit Payment Modal -->
+
+<!-- Deposit Payment Modal -->
+<!-- Deposit Payment Modal -->
 <div class="modal fade" id="depositModal" tabindex="-1" role="dialog" aria-labelledby="depositModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
@@ -91,23 +93,36 @@
                 </button>
             </div>
             <div class="modal-body">
-                <p><strong>Tenant Name:</strong> {{ $tenant->Name }}</p>
-                <p><strong>Room Number:</strong> @if($room) {{ $room->room_number }} @else Not assigned @endif</p>
+                <form id="payment-form" method="POST" action="{{ route('mpesa.pay') }}">
+                    @csrf
+                    <p><strong>Tenant Name:</strong> {{ $tenant->Name }}</p>
+                    <p><strong>Room Number:</strong> @if($room) {{ $room->room_number }} @else Not assigned @endif</p>
 
-                <p><strong>Amount:</strong> ${{ $room->charges }}</p>
-                <div class="form-group">
-                    <label for="phone"><strong>Phone Number:</strong></label>
-                    <input type="text" class="form-control" id="phone" name="phone" value="{{ $tenant->Phone }}">
+                    <p><strong>Amount:</strong> ${{ $room->charges }}</p>
+                    <div class="form-group">
+                        <label for="phone"><strong>Phone Number:</strong></label>
+                        <input type="text" class="form-control" id="phone" name="phone" value="{{ $tenant->Phone }}">
+                    </div>
+                    <input type="hidden" name="amount" value="{{ $room->charges }}">
+                    <input type="hidden" name="room_number" value="{{ $room->room_number }}">
+                    <input type="hidden" name="tenant_name" value="{{ $tenant->Name }}">
+
+                    <div class="modal-footer d-flex ">
+                    <button type="button" class="btn btn-danger" data-dismiss="modal">
+                        <i class="fas fa-arrow-left"></i> Cancel</button>
+                    <button type="submit" class="btn btn-success">
+                        <i class="fas fa-dollar-sign"></i> Confirm Payment</button>
                 </div>
 
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary" >Pay Now</button>
+
+
+                </form>
             </div>
         </div>
     </div>
 </div>
+
+
 
 </main>
 @endsection
@@ -119,7 +134,29 @@
             scrollTop: $('#contactSection').offset().top
         }, 1000);
     }
+
+    $(document).on('submit', '#payment-form', function(e) {
+    e.preventDefault();  // Prevent default form submission
+
+    let formData = $(this).serialize();  // Serialize form data
+
+    $.ajax({
+        url: $(this).attr('action'),  // Get form action URL
+        type: $(this).attr('method'),  // Get form method
+        data: formData,  // Send form data
+        success: function(response) {
+            alert('Payment initiated successfully! Please check your phone for the M-Pesa prompt.');
+            $('#depositModal').modal('hide');  // Close the modal after success
+        },
+        error: function(error) {
+            console.error(error);
+            alert('Failed to initiate payment. Please try again.');
+        }
+    });
+});
+
 </script>
+
 @endsection
 
 <style>

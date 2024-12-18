@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\ManagerController;
 use App\Http\Controllers\TenantController;
+use App\Http\Controllers\PayController;
 use App\Http\Controllers\ApartmentController;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
 
@@ -34,6 +35,15 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
+
+//mpesa routes
+    Route::post('/mpesa/mpay', [PayController::class, 'InitiateMpay'])->name('mpesa.pay');
+    Route::post('/mpesa/callback', [PayController::class, 'CallbackUrl'])->name('mlipa.callback');
+    Route::post('/mpesa/validation', [PayController::class, 'ValidationUrl'])->name('mlipa.validation');
+    Route::post('/mpesa/confirmation', [PayController::class, 'ConfirmationUrl'])->name('mlipa.confirmation');
+    Route::get('/mpesa/register', [PayController::class, 'RegisterUrl'])->name('mlipa.register');
+
+
 // Admin routes
 Route::middleware(['auth:admin'])->group(function () {
     Route::get('/admin/dashboard', [AdminController::class, 'AdminDashboard'])->name('admin.dashboard');
@@ -49,6 +59,10 @@ Route::middleware(['auth:admin'])->group(function () {
     //admin tenant routes
     Route::get('/admin/addtenant', [AdminController::class, 'AddTenant'])->name('admin.addtenant');
     Route::post('/admin/savetenant', [AdminController::class, 'SaveTenantData'])->name('admin.savetenantdata');
+    Route::get('/admin/alltenants', [AdminController::class, 'AdminViewTenants'])->name('admin.viewtenantsdata');
+    Route::get('/tenants/filter', [AdminController::class, 'adminfilterTenants'])->name('admin.filtertenants');
+
+
 
     // Manage Managers
     Route::get('/admin/add_manager', [AdminController::class, 'AddManager'])->name('admin.addmanager');
@@ -68,7 +82,7 @@ Route::middleware(['auth:manager'])->group(function () {
     Route::get('/manager/Units', [ManagerController::class, 'ManageApartmentUnits'])->name('manager.manageapartmentform');
     Route::post('/manager/manage-units', [ManagerController::class, 'ManageUnits'])->name('manager.manageunits');
     Route::get('/manager/apartment_units', [ManagerController::class, 'viewApartmentUnits'])->name('manager.apartmentunits');
-    Route::get('/manager/add_tenant', [ManagerController::class, 'AddTenantform'])->name('manager.addtenant');
+    Route::get('/manager/add_tenant', [ManagerController::class, 'AddTenantform'])->name('manager.add_tenant');
     Route::post('/manager/tenant_store', [ManagerController::class, 'SaveTenant'])->name('manager.savetenant');
     Route::get('manager/allocate-form', [ManagerController::class, 'AllocateForm'])->name('manager.allocate_Form');
     Route::get('/manager/apartmentunits', [ManagerController::class, 'ShowApartmentUnits'])->name('manager.showapartmentunits');
@@ -78,13 +92,12 @@ Route::middleware(['auth:manager'])->group(function () {
     Route::get('/manager/{id}/edit_tenant', [TenantController::class, 'EditTenant'])->name('manager.edit_tenant');
     Route::put('/manager/update_tenant/{id}', [TenantController::class, 'UpdateTenant'])->name('manager.update_tenant');
 
+
     Route::get('/manager/allocate/{tenant_id}', [TenantController::class, 'showAllocateRoomForm'])->name('manager.allocate_room');
     Route::post('/manager/check_in', [TenantController::class, 'allocateRoom'])->name('manager.roomcheck_in');
 
 
 });
-
-
 
 // Tenant routes
 Route::middleware(['auth:tenant'])->group(function () {

@@ -39,22 +39,30 @@
                 </ul>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="#">
-                    <i class="fas fa-user-friends"></i>
-                    Tenants
-                </a>
-                <ul class="nav flex-column ms-3">
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ route('admin.addtenant') }}">Add Tenant</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">View Tenants</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">Manage Tenants</a>
-                    </li>
-                </ul>
-            </li>
+    <a class="nav-link" href="#">
+        <i class="fas fa-user-friends"></i>
+        Tenants
+    </a>
+    <ul class="nav flex-column ms-3">
+        <li class="nav-item">
+            <a class="nav-link" href="{{ route('admin.addtenant') }}">
+                <i class="fas fa-plus-circle"></i> Add Tenant
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="{{ route('admin.viewtenantsdata') }}">
+                <i class="fas fa-list"></i> View All Tenants
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="{{ route('admin.filtertenants') }}">
+                <i class="fas fa-filter"></i> View Tenants by Apartment
+            </a>
+        </li>
+    </ul>
+</li>
+
+
             <li class="nav-item">
                 <a class="nav-link" href="#">
                     <i class="fas fa-dollar-sign"></i>

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use App\Models\Managers;
 use App\Models\Property;
 use App\Models\ApartmentRoom;
@@ -45,52 +46,92 @@ class ManagerController extends Controller
 
         return view('manager.apartmentunits', compact('manager', 'apartmentRooms', 'managerAllocation'));
     }
+
     public function AddTenantform()
     {
-        return view('manager.addtenantform');
+        $manager = Auth::guard('manager')->user();
+        if (!$manager) {
+            return redirect()->back()->with('error', 'Unauthorized access.');
+        }
+
+        // Fetch the apartment ID from the manage_mgrs table
+        $apartmentId = DB::table('manage_mgr')
+            ->where('manager_id', $manager->id)
+            ->value('apartment_id'); // Retrieve the apartment_id for this manager
+
+
+
+        if (!$apartmentId) {
+            return redirect()->back()->with('error', 'You are not assigned to any apartment.');
+        }
+
+        // Fetch rooms belonging to the manager's assigned apartment and with status 'Vacant'
+        $vacantRooms = DB::table('apartment_rooms')
+            ->where('apartment_id', $apartmentId)
+            ->where('status', 'vacant')
+            ->get();
+        // Pass the data to the view
+        return view('manager.addtenantdetails', compact('vacantRooms'));
     }
+
+
+
     public function SaveTenant(Request $request)
     {
-        $request->validate([
+        // Ensure the manager is authenticated
+        $manager = Auth::guard('manager')->user();
+        if (!$manager) {
+            return redirect()->back()->with('error', 'Unauthorized access.');
+        }
+
+        // Validate the request data
+        $validatedData = $request->validate([
             'name' => 'required|string|max:255',
-            'id_number' => 'required|numeric|unique:tenants,IDNumber',
-            'phone' => 'required|string',
+            'id_number' => 'required|unique:tenants,IDNumber',
+            'phone' => 'required|string|max:15',
             'email' => 'required|email',
             'gender' => 'required|string',
+            'room_id' => 'required|exists:apartment_rooms,id',
+            'entry_date' => 'required|date',
             'id_image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 
-        // Check if tenant with the same ID number already exists
-        $existingTenant = Tenant::where('IDNumber', $request->id_number)->first();
 
-        if ($existingTenant) {
-            return redirect()->back()->withInput()->with('error', 'Tenant with ID number already exists.');
+        $tenant = new Tenant();
+        $tenant->name = $request->name;
+        $tenant->IDNumber = $request->id_number;
+        $tenant->password = Hash::make($request->id_number);
+        $tenant->phone = $request->phone;
+        $tenant->email = $request->email;
+        $tenant->gender = $request->gender;
+        $tenant->role = 'tenant'; // set Role to Tenant
+
+        if ($request->hasFile('id_image')) {
+            $imageName = time() . '.' . $request->id_image->extension(); // get extension $ Generate a unique name
+            $request->id_image->move(public_path('tenant_images'), $imageName);
+            $tenant->IDImage = $imageName;
         }
+        $tenant->save(); // Save tenant record
 
-        // Upload and store the ID Image
-        $imageName = time() . '.' . $request->id_image->extension();
-        $request->id_image->move(public_path('tenant_images'), $imageName);
+        // Add booking to the apartment_bookings table
+        $booking = new ApartmentBooking();
+        $booking->tenant_id = $tenant->id;
+        $booking->room_id = $request->room_id;
+        $booking->apartment_id = DB::table('manage_mgr')->where('manager_id', $manager->id)->value('apartment_id');
+        $booking->entry_date = $request->entry_date;
+        $booking->status = 'Active';
+        $booking->save();
 
+        // Update room status to 'occupied'
+        DB::table('apartment_rooms')
+            ->where('id', $request->room_id)
+            ->update(['status' => 'occupied']);
 
-
-        // Create a new Tenant instance and save it to the database
-        $tenant = Tenant::create([
-            'Name' => $request->name,
-            'IDNumber' => $request->id_number,
-            'Gender' => $request->gender,
-            'Phone' => $request->phone,
-            'Email' => $request->email,
-            'IDImage' => $imageName,
-            'role' => 'tenant',
-            'password' => Hash::make($request->id_number)
-        ]);
-
-        if ($tenant) {
-            return redirect()->back()->with('success', 'Tenant registered successfully.');
-        } else {
-            return redirect()->back()->with('error', 'Failed to register tenant.');
-        }
+        // Redirect back with success message
+        return redirect()->route('manager.add_tenant')->with('success', 'Tenant registered and room allocated successfully!');
     }
+
+
 
     public function getRoomNumbers($roomType)
     {
@@ -116,7 +157,8 @@ class ManagerController extends Controller
         $totalUnits = $apartment ? $apartment->Units : 0;
 
         return view('manager.manageapartment', compact('manager', 'apartment', 'totalUnits'));
-    }
+
+ }
 
     public function ManageUnits(Request $request)
     {

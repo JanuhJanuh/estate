@@ -7,11 +7,15 @@ use App\Http\Requests\Auth\LoginRequest;
 use App\Providers\RouteServiceProvider;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\View\View;
 use App\Models\Property;
-
+use App\Models\Tenant;
+use App\Models\ApartmentRoom;
+use App\Models\ApartmentBooking;
 
 class AdminController extends Controller
 {
@@ -125,28 +129,16 @@ public function SaveProperty(Request $request)
             'email' => 'required|email',
             'gender' => 'required|string',
             'id_image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
-            'apartment_id' => 'required|exists:apartments,id',
-            'room_id' => 'required|exists:apartmentrooms,id',
+            'apartment_id' => 'required|exists:_property,id',
+            'room_id' => 'required|exists:apartment_rooms,id',
             'entry_date' => 'required|date',
         ]);
 
-       
-
-        // Check if tenant with the same ID number already exists
-        $existingTenant = Tenant::where('IDNumber', $request->id_number)->first();
-        if ($existingTenant) {
-            return redirect()->back()->withInput()->with('error', 'Tenant with ID number already exists.');
-        }
-
-        // Start a database transaction
         DB::beginTransaction();
-
         try {
-            // Upload and store the ID Image
             $imageName = time() . '.' . $request->id_image->extension();
             $request->id_image->move(public_path('tenant_images'), $imageName);
 
-            // Create a new Tenant instance and save it to the database
             $tenant = Tenant::create([
                 'Name' => $request->name,
                 'IDNumber' => $request->id_number,
@@ -158,29 +150,39 @@ public function SaveProperty(Request $request)
                 'role' => 'tenant',
             ]);
 
-            // Save the allocation to the apartmentbooking table
             ApartmentBooking::create([
-                'tenant_id' => $tenant->id, // get the tenant id
+                'tenant_id' => $tenant->id,
                 'apartment_id' => $request->apartment_id,
                 'room_id' => $request->room_id,
                 'entry_date' => $request->entry_date,
                 'status' => 'Active',
             ]);
 
-            // Update the status of the allocated room to 'Occupied'
             ApartmentRoom::where('id', $request->room_id)
                 ->update(['status' => 'Occupied']);
 
-            // Commit the transaction
             DB::commit();
 
             return redirect()->back()->with('success', 'Tenant registered and room allocated successfully.');
         } catch (\Exception $e) {
-            // Rollback the transaction in case of error
             DB::rollBack();
-
             return redirect()->back()->withInput()->with('error', 'Failed to register tenant and allocate room. ' . $e->getMessage());
         }
+    }
+
+    public function AdminViewTenants(Request $request)
+    {
+        $properties = Property::all();
+
+        $tenants = Tenant::with('property', 'room')
+            ->when($request->property_id, function ($query) use ($request) {
+                $query->whereHas('property', function ($q) use ($request) {
+                    $q->where('_property.id', $request->property_id); 
+                });
+            })
+            ->get();
+
+        return view('admin.viewtenants', compact('tenants', 'properties'));
     }
 
 

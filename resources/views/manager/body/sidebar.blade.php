@@ -32,7 +32,7 @@
                         <h6 class="card-title">Tenant Management</h6>
                         <ul class="nav flex-column dropdown-menu">
                             <li class="nav-item">
-                                <a class="nav-link" href="{{ route('manager.addtenant') }}">Add Tenant</a>
+                                <a class="nav-link" href="{{ route('manager.add_tenant') }}">Add Tenant</a>
                             </li>
                             <li class="nav-item">
                                 <a class="nav-link" href="{{ route('manager.view_tenants') }}">View Tenants</a>

@@ -21,16 +21,13 @@ class Tenant extends Authenticatable
 
     public function booking()
     {
-        return $this->hasOne(ApartmentBooking::class, 'tenant_id');
+        return $this->hasOne(ApartmentBooking::class, 'tenant_id')->with(['room', 'apartment']);
     }
 
-    public function apartment()
-    {
-        return $this->belongsTo(Property::class);
-    }
 
     public function property()
     {
-        return $this->belongsTo(Property::class);
+        return $this->hasOneThrough(Property::class, ApartmentBooking::class, 'tenant_id', 'id', 'id', 'apartment_id');
     }
+
 }

@@ -26,9 +26,10 @@ class ApartmentBooking extends Model
     }
 
     public function apartment()
-    {
-        return $this->belongsTo(Property::class, 'apartment_id');
-    }
+{
+    return $this->belongsTo(Property::class, 'apartment_id');
+}
+
 
     public function room()
     {
